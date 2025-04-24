@@ -46,14 +46,25 @@ def get_valid_number(prompt):
         except ValueError:
             print("Invalid input. Please enter a number.")
 
+def count_matches(filename):
+    """Count the number of matches recorded in the file."""
+    try:
+        with open(filename, "r") as file:
+            return sum(1 for line in file if line.strip())
+    except FileNotFoundError:
+        return 0
+
 # Main program execution
 print("Available League of Legends characters:")
 print(", ".join(LEAGUE_CHARACTERS))
 
 character_name = ""
 while character_name.title() not in LEAGUE_CHARACTERS:
-    character_name = input("Enter the character's name (choose from the list above): ").title()
-    if character_name.title() not in LEAGUE_CHARACTERS:
+    character_name = input("Enter the character's name (or type 'exit' to quit): ").title()
+    if character_name.lower() == "Exit":
+        print("Exiting program.")
+        exit()
+    elif character_name not in LEAGUE_CHARACTERS:
         print("Invalid character name. Please choose a name from the list.")
 
 filename = f"{character_name}_stats.txt"
@@ -65,7 +76,7 @@ while True:
     assists = get_valid_number("Enter number of Assists: ")
 
     save_match(filename, date, kills, deaths, assists)
-    print("Match saved successfully!")
+    print(f"Match saved successfully! Total matches recorded: {count_matches(filename)}")
 
     display_match_history(filename)
 
